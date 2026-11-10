@@ -6,9 +6,9 @@ $risultato=null;
 $erroren1=null;
 $erroren2=null;
 $erroreop=null;
-if ($_SERVER["REQUEST_METHOD"]=="GET") {
-    $n1 = isset($_GET["1cifra"]) ? floatval($_GET["1cifra"]) : 0;
-    $n2 =isset($_GET["2cifra"]) ? floatval($_GET["2cifra"]) : 0;
+if ($_SERVER["REQUEST_METHOD"]=="GET" && isset($_GET["1cifra"])) {
+    $n1 = isset($_GET["1cifra"]) ? $_GET["1cifra"] : "";
+    $n2 =isset($_GET["2cifra"]) ? $_GET["2cifra"] : "";
     $operazione = isset($_GET['Op']) ? $_GET['Op'] : "";
     $asso=isset($_GET["assoluto"]);
     $quad=isset($_GET["quadrato"]);
@@ -23,7 +23,11 @@ if ($_SERVER["REQUEST_METHOD"]=="GET") {
     if (!is_numeric($n2)) {
         $erroren2="Inerisci un numero valido";
     }
-        if($operazione !== "" && in_array("somma", $operazione)) {
+    if (is_numeric($n1) && is_numeric($n2)) {
+        $n1 = floatval($n1);
+        $n2 = floatval($n2);
+    }
+    if($operazione !== "" && in_array("somma", $operazione)) {
         $risultato=$n1+$n2;
     }
     if($operazione !== "" && in_array("sottrazione", $operazione)) {
@@ -58,14 +62,15 @@ if ($_SERVER["REQUEST_METHOD"]=="GET") {
 <body>
     <form method="GET" action="index.php">
         <h1>Calcolatrice</h1>
-        <p>a:<input type="number" name="1cifra"></p>
-        <p>b:<input type="number" name="2cifra"></p>
+        <p>a:<input type="text" name="1cifra"><?php if($erroren1) {echo $erroren1;}?></p>
+        <p>b:<input type="text" name="2cifra"><?php if($erroren2) {echo $erroren2;}?></p>
         <fieldset style="width:300px;">
             <legend>Operazione</legend>
             <div><input id="A" type="radio" name="Op[]" value="somma"><label for="A">somma</label></div>
             <div><input id="S" type="radio" name="Op[]" value="sottrazione"><label for="S">sottrazione</label></div>
             <div><input id="M" type="radio" name="Op[]" value="moltiplicazione"><label for="M">moltiplicazione</label></div>
             <div><input id="D" type="radio" name="Op[]" value="divisione"><label for="D">divisione</label></div>
+            <?php if($erroreop) {echo $erroreop;}?>
         </fieldset>
         <fieldset style="width:300px;">
             <legend>Opzioni</legend>
